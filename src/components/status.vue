@@ -29,36 +29,26 @@
       </thead>
       <tbody>
         <tr>
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <th v-bind="attrs" v-on="on">STATUS</th>
-            </template>
-            <span>能力値</span>
-          </v-tooltip>
+          <th class="table-lang-ja">能力値</th>
           <td v-for="(value, key) in status" :key="key">
-            <input type="number" v-model="status[key]" class="input-status" max="999" min="-99">
+            <span v-if="['hp','mp','san','idea','lucky','knowledge'].includes(key)" class="non-input-status">
+              {{ status[key] }}
+            </span>
+            <span v-else>
+              <input type="number" v-model="status[key]" class="input-status" max="300" min="-99">
+            </span>
           </td>
         </tr>
         <tr>
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <th v-bind="attrs" v-on="on">FIX</th>
-            </template>
-            <span>修正値</span>
-          </v-tooltip>
+          <th class="table-lang-ja">修正値</th>
           <td v-for="(value, key) in fixStatus" :key="key">
-            <input type="number" v-model="fixStatus[key]" class="input-status" max="999" min="-99">
+            <input type="number" v-model="fixStatus[key]" class="input-status" max="300" min="-99">
           </td>
         </tr>
         <tr>
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <th v-bind="attrs" v-on="on">SUM</th>
-            </template>
-            <span>合計値</span>
-          </v-tooltip>
+          <th class="table-lang-ja">合計値</th>
           <td v-for="(_, key) in status" :key="key">
-            <span class="sum-status">{{ sumStatus(key) }}</span>
+            <span class="non-input-status">{{ sumStatus(key) }}</span>
           </td>
         </tr>
       </tbody>
@@ -153,6 +143,10 @@ table td {
   text-align: right;
 }
 
+.table-lang-ja {
+  white-space: nowrap;
+}
+
 .input-status {
   position: relative;
   box-sizing:border-box;
@@ -161,7 +155,7 @@ table td {
   text-align: right;
 }
 
-.sum-status {
+.non-input-status {
   margin-right: 1rem;
   width: 5rem;
   font-size: 1.5rem;

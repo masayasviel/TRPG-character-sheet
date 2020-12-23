@@ -23,7 +23,7 @@
         {{ snackbarStatus.text }}
         <template v-slot:action="{ attrs }">
           <v-btn
-            color="red"
+            color="blue"
             text
             v-bind="attrs"
             @click="snackbarStatus.snackbar=false"

@@ -3,24 +3,21 @@
     <h1>プロフィール</h1>
     <v-form>
       <v-text-field
-        label="character name"
+        label="キャラクター名"
         outlined
         v-model="characterName"
-        hint="キャラクター名"
       ></v-text-field>
       <v-text-field
-        label="occupation"
+        label="職業"
         outlined
         v-model="occupation"
-        hint="職業"
       ></v-text-field>
       <v-textarea
         outlined
         clearable
         clear-icon="mdi-close-circle"
-        label="remarks"
+        label="備考"
         v-model="remarks"
-        hint="備考"
       ></v-textarea>
     </v-form>
   </v-container>
