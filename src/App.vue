@@ -1,13 +1,38 @@
 <template>
   <v-app>
-    <Profile
-      :propsCharacterName.sync="characterName"
-      :propsOccupation.sync="occupation"
-      :propsRemarks.sync="remarks"
-    />
-    <Status
-      :status="status"
-    />
+    <v-app-bar
+      color="grey lighten-3"
+      app
+    >
+      <v-toolbar-title>TRPG Character Sheet</v-toolbar-title>
+    </v-app-bar>
+    <v-main app>
+      <Profile
+        :propsCharacterName.sync="characterName"
+        :propsOccupation.sync="occupation"
+        :propsRemarks.sync="remarks"
+        app
+      />
+      <Status
+        :propsStatus.sync="status"
+        :propsFixStatus.sync="fixStatus"
+        @diceRollStatus="randomlyDetermineStatus"
+        app
+      />
+      <v-snackbar v-model="snackbarStatus.snackbar" :timeout="timeout">
+        {{ snackbarStatus.text }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="red"
+            text
+            v-bind="attrs"
+            @click="snackbarStatus.snackbar=false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </v-main>
   </v-app>
 </template>
 
@@ -79,8 +104,31 @@ export default Vue.extend({
       san: 0,
       idea: 0,
       lucky: 0,
-      knowledge: 0,
+      knowledge: 0
     },
+    // fix status
+    fixStatus: {
+      str: 0,
+      con: 0,
+      siz: 0,
+      int: 0,
+      pow: 0,
+      dex: 0,
+      app: 0,
+      edu: 0,
+      hp: 0,
+      mp: 0,
+      san: 0,
+      idea: 0,
+      lucky: 0,
+      knowledge: 0
+    },
+    // snackbar status
+    snackbarStatus: {
+      snackbar: false,
+      text: "dice rolled.",
+      timeout: 1500,
+    }
   }),
   methods: {
     /**
@@ -101,6 +149,7 @@ export default Vue.extend({
       this.status.idea = this.status.int * 5;
       this.status.lucky = this.status.pow * 5;
       this.status.knowledge = this.status.edu * 5;
+      this.snackbarStatus.snackbar = true;
     }
   }
 });

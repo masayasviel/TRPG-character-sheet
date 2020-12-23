@@ -40,4 +40,7 @@ export default class Profile extends Vue {
 </script>
 
 <style scoped>
+h1 {
+  margin-bottom: 1.5rem;
+}
 </style>

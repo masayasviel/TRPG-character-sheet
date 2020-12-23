@@ -1,6 +1,18 @@
 <template>
   <v-container>
-    <h1>ステータス</h1>
+
+    <!-- ステータスヘッダー -->
+    <div class="status-header">
+      <h1>ステータス</h1>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <span v-bind="attrs" v-on="on"><img src="../assets/dice.svg" @click="diceRollStatus"></span>
+        </template>
+        <span>ステータスのダイスロールを一括で行います</span>
+      </v-tooltip>
+    </div>
+
+    <!-- ステータステーブル -->
     <table>
       <thead>
         <tr>
@@ -8,10 +20,7 @@
           <th v-for="(value, key) in status" :key="key">
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <span
-                  v-bind="attrs"
-                  v-on="on"
-                >{{ key.toUpperCase() }}</span>
+                <span v-bind="attrs" v-on="on">{{ key.toUpperCase() }}</span>
               </template>
               <span>{{ statusMessage[key] }}</span>
             </v-tooltip>
@@ -20,9 +29,36 @@
       </thead>
       <tbody>
         <tr>
-          <th>STATUS</th>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <th v-bind="attrs" v-on="on">STATUS</th>
+            </template>
+            <span>能力値</span>
+          </v-tooltip>
           <td v-for="(value, key) in status" :key="key">
-            <input type="number" :value="value" class="input-status" max="999" min="-99">
+            <input type="number" v-model="status[key]" class="input-status" max="999" min="-99">
+          </td>
+        </tr>
+        <tr>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <th v-bind="attrs" v-on="on">FIX</th>
+            </template>
+            <span>修正値</span>
+          </v-tooltip>
+          <td v-for="(value, key) in fixStatus" :key="key">
+            <input type="number" v-model="fixStatus[key]" class="input-status" max="999" min="-99">
+          </td>
+        </tr>
+        <tr>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <th v-bind="attrs" v-on="on">SUM</th>
+            </template>
+            <span>合計値</span>
+          </v-tooltip>
+          <td v-for="(_, key) in status" :key="key">
+            <span class="sum-status">{{ sumStatus(key) }}</span>
           </td>
         </tr>
       </tbody>
@@ -31,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, PropSync, Emit } from "vue-property-decorator";
 
 interface StatusType {
   str: number;
@@ -50,10 +86,15 @@ interface StatusType {
   knowledge: number;
 }
 
+type statusPropaty = "str" | "con" | "siz" | "int" | "pow" | "dex" |
+                    "app" | "edu" | "hp" | "mp" | "san" | "idea" | "lucky" | "knowledge";
+
 @Component
 export default class Profile extends Vue {
-    @Prop()
+    @PropSync("propsStatus")
     private status!: StatusType;
+    @PropSync("propsFixStatus")
+    private fixStatus!: StatusType;
 
     private statusMessage = {
       str: "筋力(1D3)",
@@ -71,10 +112,35 @@ export default class Profile extends Vue {
       lucky: "幸運(POW×5)",
       knowledge: "知識(EDU×5)"
     };
+
+    get sumStatus() {
+      return (key: statusPropaty): number => Number(this.status[key])+Number(this.fixStatus[key]);
+    }
+
+    @Emit("diceRollStatus")
+    private diceRollStatus() { return; }
 }
 </script>
 
 <style scoped>
+.status-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;;
+}
+
+.status-header img {
+  width: 4.5rem;
+  height: auto;
+  margin-left: 1.5rem;
+}
+
+.status-header img:hover {
+  background-color: lightgray;
+  border: solid 2px;
+  border-radius: 10%;
+}
+
 table {
   border-collapse: collapse;
 }
@@ -90,6 +156,13 @@ table td {
 .input-status {
   position: relative;
   box-sizing:border-box;
+  width: 5rem;
+  font-size: 1.5rem;
+  text-align: right;
+}
+
+.sum-status {
+  margin-right: 1rem;
   width: 5rem;
   font-size: 1.5rem;
   text-align: right;
