@@ -121,7 +121,25 @@ export default Vue.extend({
       san: 0,
       idea: 0,
       lucky: 0,
-      knowledge: 0
+      knowledge: 0,
+    },
+    // skill
+    skill: [],
+    specialSkill: {
+      avoidance: {
+        name: "回避",
+        initValue: 0,
+        occupationPoint: 0,
+        interestPoint: 0,
+        fixPoint: 0
+      },
+      cthulhuMythos: {
+        name: "クトゥルフ神話",
+        initValue: 0,
+        occupationPoint: 0,
+        interestPoint: 0,
+        fixPoint: 0
+      }
     },
     // snackbar status
     snackbarStatus: {
@@ -149,6 +167,7 @@ export default Vue.extend({
       this.status.idea = this.status.int * 5;
       this.status.lucky = this.status.pow * 5;
       this.status.knowledge = this.status.edu * 5;
+      this.specialSkill.avoidance.initValue = this.status.dex * 2;
       this.snackbarStatus.snackbar = true;
     }
   }

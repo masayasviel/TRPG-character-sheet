@@ -76,8 +76,8 @@ interface StatusType {
   knowledge: number;
 }
 
-type statusPropaty = "str" | "con" | "siz" | "int" | "pow" | "dex" |
-                    "app" | "edu" | "hp" | "mp" | "san" | "idea" | "lucky" | "knowledge";
+type statusPropaty = "str" | "con" | "siz" | "int" | "pow" | "dex" | "app" |
+                    "edu" | "hp" | "mp" | "san" | "idea" | "lucky" | "knowledge";
 
 @Component
 export default class Profile extends Vue {
@@ -100,7 +100,7 @@ export default class Profile extends Vue {
       san: "正気度(POW×5)",
       idea: "アイディア(INT×5)",
       lucky: "幸運(POW×5)",
-      knowledge: "知識(EDU×5)"
+      knowledge: "知識(EDU×5)",
     };
 
     get sumStatus() {
