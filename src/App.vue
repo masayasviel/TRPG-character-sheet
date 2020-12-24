@@ -126,6 +126,13 @@ export default Vue.extend({
     // skill
     skill: [],
     specialSkill: {
+      nativeLanguage: {
+        name: "母国語",
+        initValue: 0,
+        occupationPoint: 0,
+        interestPoint: 0,
+        fixPoint: 0
+      },
       avoidance: {
         name: "回避",
         initValue: 0,
@@ -167,6 +174,7 @@ export default Vue.extend({
       this.status.idea = this.status.int * 5;
       this.status.lucky = this.status.pow * 5;
       this.status.knowledge = this.status.edu * 5;
+      this.specialSkill.nativeLanguage.initValue = this.status.edu * 5;
       this.specialSkill.avoidance.initValue = this.status.dex * 2;
       this.snackbarStatus.snackbar = true;
     }
