@@ -17,7 +17,7 @@
       <thead>
         <tr>
           <th></th>
-          <th v-for="(value, key) in status" :key="key">
+          <th v-for="(_, key) in statusMessage" :key="key">
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
                 <span v-bind="attrs" v-on="on">{{ key.toUpperCase() }}</span>
@@ -31,13 +31,14 @@
         <tr>
           <th class="table-lang-ja">能力値</th>
           <td v-for="(value, key) in status" :key="key">
-            <span v-if="['hp','mp','san','idea','lucky','knowledge'].includes(key)" class="non-input-status">
-              {{ status[key] }}
-            </span>
-            <span v-else>
-              <input type="number" v-model="status[key]" class="input-status" max="300" min="-99">
-            </span>
+            <input type="number" v-model="status[key]" class="input-status" max="300" min="-99">
           </td>
+          <td><span class="non-input-status">{{ hp() }}</span></td>
+          <td><span class="non-input-status">{{ mp() }}</span></td>
+          <td><span class="non-input-status">{{ san() }}</span></td>
+          <td><span class="non-input-status">{{ idea() }}</span></td>
+          <td><span class="non-input-status">{{ lucky() }}</span></td>
+          <td><span class="non-input-status">{{ knowledge() }}</span></td>
         </tr>
         <tr>
           <th class="table-lang-ja">修正値</th>
@@ -48,8 +49,14 @@
         <tr>
           <th class="table-lang-ja">合計値</th>
           <td v-for="(_, key) in status" :key="key">
-            <span class="non-input-status">{{ sumStatus(key) }}</span>
+            <span class="non-input-status">{{ Number(status[key])+Number(fixStatus[key]) }}</span>
           </td>
+          <td><span class="non-input-status">{{ hp(true) }}</span></td>
+          <td><span class="non-input-status">{{ mp(true) }}</span></td>
+          <td><span class="non-input-status">{{ san(true) }}</span></td>
+          <td><span class="non-input-status">{{ idea(true) }}</span></td>
+          <td><span class="non-input-status">{{ lucky(true) }}</span></td>
+          <td><span class="non-input-status">{{ knowledge(true) }}</span></td>
         </tr>
       </tbody>
     </table>
@@ -68,6 +75,17 @@ interface StatusType {
   dex: number;
   app: number;
   edu: number;
+}
+
+interface FixStatusType {
+  str: number;
+  con: number;
+  siz: number;
+  int: number;
+  pow: number;
+  dex: number;
+  app: number;
+  edu: number;
   hp: number;
   mp: number;
   san: number;
@@ -76,15 +94,12 @@ interface StatusType {
   knowledge: number;
 }
 
-type statusPropaty = "str" | "con" | "siz" | "int" | "pow" | "dex" | "app" |
-                    "edu" | "hp" | "mp" | "san" | "idea" | "lucky" | "knowledge";
-
 @Component
 export default class Profile extends Vue {
     @PropSync("propsStatus")
     private status!: StatusType;
     @PropSync("propsFixStatus")
-    private fixStatus!: StatusType;
+    private fixStatus!: FixStatusType;
 
     private statusMessage = {
       str: "筋力(1D3)",
@@ -103,8 +118,23 @@ export default class Profile extends Vue {
       knowledge: "知識(EDU×5)",
     };
 
-    get sumStatus() {
-      return (key: statusPropaty): number => Number(this.status[key])+Number(this.fixStatus[key]);
+    get hp() {
+      return (flag = false): number => Math.ceil((Number(this.status.con) + Number(this.status.siz)) / 2) + (flag ? Number(this.fixStatus.hp) : 0);
+    }
+    get mp() {
+      return (flag = false): number => Number(this.status.pow) + (flag ? Number(this.fixStatus.mp) : 0);
+    }
+    get san() {
+      return (flag = false): number => Number(this.status.pow) * 5 + (flag ? Number(this.fixStatus.san) : 0);
+    }
+    get idea() {
+      return (flag = false): number => Number(this.status.int) * 5 + (flag ? Number(this.fixStatus.idea) : 0);
+    }
+    get lucky() {
+      return (flag = false): number => Number(this.status.pow) * 5 + (flag ? Number(this.fixStatus.lucky) : 0);
+    }
+    get knowledge() {
+      return (flag = false): number => Number(this.status.edu) * 5 + (flag ? Number(this.fixStatus.knowledge) : 0);
     }
 
     @Emit("diceRollStatus")

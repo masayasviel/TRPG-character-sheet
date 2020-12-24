@@ -98,13 +98,7 @@ export default Vue.extend({
       pow: 0,
       dex: 0,
       app: 0,
-      edu: 0,
-      hp: 0,
-      mp: 0,
-      san: 0,
-      idea: 0,
-      lucky: 0,
-      knowledge: 0
+      edu: 0
     },
     // fix status
     fixStatus: {
@@ -168,14 +162,8 @@ export default Vue.extend({
       this.status.siz = dice(2, 6) + 6;
       this.status.int = dice(2, 6) + 6;
       this.status.edu = dice(3, 6) + 3;
-      this.status.hp = Math.ceil((this.status.con + this.status.siz) / 2);
-      this.status.mp = this.status.pow;
-      this.status.san = this.status.pow * 5;
-      this.status.idea = this.status.int * 5;
-      this.status.lucky = this.status.pow * 5;
-      this.status.knowledge = this.status.edu * 5;
-      this.specialSkill.nativeLanguage.initValue = this.status.edu * 5;
-      this.specialSkill.avoidance.initValue = this.status.dex * 2;
+      // this.specialSkill.nativeLanguage.initValue = this.status.edu * 5;
+      // this.specialSkill.avoidance.initValue = this.status.dex * 2;
       this.snackbarStatus.snackbar = true;
     }
   }
