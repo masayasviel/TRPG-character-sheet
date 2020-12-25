@@ -19,6 +19,10 @@
         @diceRollStatus="randomlyDetermineStatus"
         app
       />
+      <Skills
+        :propDEX.sync="status.dex"
+        :propEDU.sync="status.edu"
+      />
       <v-snackbar v-model="snackbarStatus.snackbar" :timeout="timeout">
         {{ snackbarStatus.text }}
         <template v-slot:action="{ attrs }">
@@ -37,9 +41,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Profile from "./components/profile.vue";
-import Status from "./components/status.vue";
+import { Vue, Component } from "vue-property-decorator";
+
+import Profile from "@/components/profile.vue";
+import Status from "@/components/status.vue";
+import Skills from "@/components/skills.vue";
 
 /**
  * ダイスを振る
@@ -78,94 +84,72 @@ function dice(times: number, num: number): number {
 //   return res;
 // }
 
-export default Vue.extend({
-  name: "App",
+@Component({
   components: {
     Profile,
-    Status
-  },
-  data: () => ({
-    // profile
-    characterName: "",
-    occupation: "",
-    remarks: "",
-    // status
-    status: {
-      str: 0,
-      con: 0,
-      siz: 0,
-      int: 0,
-      pow: 0,
-      dex: 0,
-      app: 0,
-      edu: 0
-    },
-    // fix status
-    fixStatus: {
-      str: 0,
-      con: 0,
-      siz: 0,
-      int: 0,
-      pow: 0,
-      dex: 0,
-      app: 0,
-      edu: 0,
-      hp: 0,
-      mp: 0,
-      san: 0,
-      idea: 0,
-      lucky: 0,
-      knowledge: 0,
-    },
-    // skill
-    skill: [],
-    specialSkill: {
-      nativeLanguage: {
-        name: "母国語",
-        initValue: 0,
-        occupationPoint: 0,
-        interestPoint: 0,
-        fixPoint: 0
-      },
-      avoidance: {
-        name: "回避",
-        initValue: 0,
-        occupationPoint: 0,
-        interestPoint: 0,
-        fixPoint: 0
-      },
-      cthulhuMythos: {
-        name: "クトゥルフ神話",
-        initValue: 0,
-        occupationPoint: 0,
-        interestPoint: 0,
-        fixPoint: 0
-      }
-    },
-    // snackbar status
-    snackbarStatus: {
-      snackbar: false,
-      text: "dice rolled.",
-      timeout: 1500,
-    }
-  }),
-  methods: {
-    /**
-     * キャラのステータスを決定する
-     */
-    randomlyDetermineStatus() {
-      this.status.str = dice(3, 6);
-      this.status.con = dice(3, 6);
-      this.status.pow = dice(3, 6);
-      this.status.dex = dice(3, 6);
-      this.status.app = dice(3, 6);
-      this.status.siz = dice(2, 6) + 6;
-      this.status.int = dice(2, 6) + 6;
-      this.status.edu = dice(3, 6) + 3;
-      // this.specialSkill.nativeLanguage.initValue = this.status.edu * 5;
-      // this.specialSkill.avoidance.initValue = this.status.dex * 2;
-      this.snackbarStatus.snackbar = true;
-    }
+    Status,
+    Skills
   }
-});
+})
+export default class App extends Vue {
+  private characterName = "";
+  private occupation = "";
+  private remarks = "";
+  private status= {
+    str: 0,
+    con: 0,
+    siz: 0,
+    int: 0,
+    pow: 0,
+    dex: 0,
+    app: 0,
+    edu: 0
+  };
+  private fixStatus = {
+    str: 0,
+    con: 0,
+    siz: 0,
+    int: 0,
+    pow: 0,
+    dex: 0,
+    app: 0,
+    edu: 0,
+    hp: 0,
+    mp: 0,
+    san: 0,
+    idea: 0,
+    lucky: 0,
+    knowledge: 0,
+  };
+  // skill
+  private cthulhuMythos = {
+    name: "クトゥルフ神話",
+    initValue: 0,
+    occupationPoint: 0,
+    interestPoint: 0,
+    fixPoint: 0
+  };
+  // snackbar status
+  private snackbarStatus = {
+    snackbar: false,
+    text: "dice rolled.",
+    timeout: 1500,
+  }
+
+  // methods
+  /**
+  * キャラのステータスを決定する
+  */
+  private randomlyDetermineStatus() {
+    this.status.str = dice(3, 6);
+    this.status.con = dice(3, 6);
+    this.status.pow = dice(3, 6);
+    this.status.dex = dice(3, 6);
+    this.status.app = dice(3, 6);
+    this.status.siz = dice(2, 6) + 6;
+    this.status.int = dice(2, 6) + 6;
+    this.status.edu = dice(3, 6) + 3;
+    this.snackbarStatus.snackbar = true;
+  }
+}
 </script>

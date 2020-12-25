@@ -30,7 +30,7 @@
       <tbody>
         <tr>
           <th class="table-lang-ja">能力値</th>
-          <td v-for="(value, key) in status" :key="key">
+          <td v-for="(value, key) in status" :key="'statu'+key">
             <input type="number" v-model="status[key]" class="input-status" max="300" min="-99">
           </td>
           <td><span class="non-input-status">{{ hp() }}</span></td>
@@ -42,13 +42,13 @@
         </tr>
         <tr>
           <th class="table-lang-ja">修正値</th>
-          <td v-for="(value, key) in fixStatus" :key="key">
+          <td v-for="(value, key) in fixStatus" :key="'fixStatus'+key">
             <input type="number" v-model="fixStatus[key]" class="input-status" max="300" min="-99">
           </td>
         </tr>
         <tr>
           <th class="table-lang-ja">合計値</th>
-          <td v-for="(_, key) in status" :key="key">
+          <td v-for="(_, key) in status" :key="'sumStatus'+key">
             <span class="non-input-status">{{ Number(status[key])+Number(fixStatus[key]) }}</span>
           </td>
           <td><span class="non-input-status">{{ hp(true) }}</span></td>
@@ -95,7 +95,7 @@ interface FixStatusType {
 }
 
 @Component
-export default class Profile extends Vue {
+export default class Status extends Vue {
     @PropSync("propsStatus")
     private status!: StatusType;
     @PropSync("propsFixStatus")

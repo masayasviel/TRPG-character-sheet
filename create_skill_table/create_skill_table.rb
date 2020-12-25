@@ -16,7 +16,7 @@ csv_array.each do |file_name|
         line = i.split(",")
         arr << {
             "name" => line[0],
-            "initValue" => line[1],
+            "initValue" => line[1].to_i,
             "occupationPoint" => 0,
             "interestPoint" => 0,
             "fixPoint" => 0
