@@ -61,13 +61,13 @@
     <EtceteraSkillTable
       :propSkillTable.sync="etceteraList"
       @appendEmit="append"
-      @declearEmit=declear
+      @declearEmit="declear"
     />
   </v-container>
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync } from "vue-property-decorator";
+import { Vue, Component, PropSync, Watch } from "vue-property-decorator";
 
 import skillsTable from "@/components/skillTable.vue";
 import EtceteraSkillTable from "@/components/etceteraSkillTable.vue";
@@ -81,6 +81,9 @@ interface SkillsType {
   fixPoint: number;
 }
 
+const reducerOccupationPoint = (accumulator: number, currentValue: SkillsType) => accumulator + Number(currentValue.occupationPoint);
+const reducerInterestPoint = (accumulator: number, currentValue: SkillsType) => accumulator + Number(currentValue.interestPoint);
+
 @Component({
   components: {
     skillsTable,
@@ -92,8 +95,11 @@ export default class Skills extends Vue {
   private edu!: number;
   @PropSync("propDEX")
   private dex!: number;
+  @PropSync("propSumOccupationPoint")
+  private sumOccupationPoint!: number;
+  @PropSync("propSumInterestPoint")
+  private sumInterestPoint!: number;
 
-  // skills list
   private nativeLanguage = {
     name: "母国語",
     initValue: 0,
@@ -138,6 +144,29 @@ export default class Skills extends Vue {
       }
       return res;
     }
+  }
+  get computedSumOccupationPoint() {
+    const listSum = this.academicList.reduce(reducerOccupationPoint, 0) + this.actionList.reduce(reducerOccupationPoint, 0)
+    + this.combatList.reduce(reducerOccupationPoint, 0) + this.negotiateList.reduce(reducerOccupationPoint, 0)
+    + this.searchList.reduce(reducerOccupationPoint, 0) + this.etceteraList.reduce(reducerOccupationPoint, 0);
+    const extSum = Number(this.nativeLanguage.occupationPoint) + Number(this.avoidance.occupationPoint);
+    return listSum + extSum;
+  }
+  get computedSumInterestPoint() {
+    const listSum = this.academicList.reduce(reducerInterestPoint, 0) + this.actionList.reduce(reducerInterestPoint, 0)
+    + this.combatList.reduce(reducerInterestPoint, 0) + this.negotiateList.reduce(reducerInterestPoint, 0)
+    + this.searchList.reduce(reducerInterestPoint, 0) + this.etceteraList.reduce(reducerInterestPoint, 0);
+    const extSum = Number(this.nativeLanguage.interestPoint) + Number(this.avoidance.interestPoint);
+    return listSum+extSum; 
+  }
+
+  @Watch("computedSumOccupationPoint")
+  private setSumOccupationPoint(newValue: number) {
+    this.sumOccupationPoint = newValue;
+  }
+  @Watch("computedSumInterestPoint")
+  private setSumInterestPoint(newValue: number) {
+    this.sumInterestPoint = newValue;
   }
 
   /**

@@ -22,7 +22,52 @@
       <Skills
         :propDEX.sync="status.dex"
         :propEDU.sync="status.edu"
+        :propSumOccupationPoint.sync="sumOccupationPoint"
+        :propSumInterestPoint.sync="sumInterestPoint"
       />
+      <table class="use-playing">
+        <tr>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <th v-bind="attrs" v-on="on">職業ポイント</th>
+            </template>
+            <span>EDU×20</span>
+          </v-tooltip>
+          <td><span class="non-input-status">{{ sumOccupationPoint }} / {{ Number(status.edu) * 20 }}</span></td>
+        </tr>
+        <tr>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <th v-bind="attrs" v-on="on">興味ポイント</th>
+            </template>
+            <span>INT×10</span>
+          </v-tooltip>
+          <td><span class="non-input-status">{{ sumInterestPoint }} / {{ Number(status.int) * 10 }}</span></td>
+        </tr>
+        <tr>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <th v-bind="attrs" v-on="on">SAN値上限</th>
+            </template>
+            <span>99-クトゥルフ神話技能</span>
+          </v-tooltip>
+          <td><span class="non-input-status">{{ 99-Number(this.cthulhuMythos.fixPoint) }}</span></td>
+        </tr>
+        <tr>
+          <th>SAN値</th>
+          <td>
+            <input type="number" class="input-status" :value="currentSanValue" min="0"> / <span class="non-input-status">{{ currentSanValue }}</span>
+          </td>
+        </tr>
+        <tr>
+          <th>ダメージボーナス</th>
+          <td><span class="non-input-status">{{ damageBonus }}</span></td>
+        </tr>
+        <tr>
+          <th>クトゥルフ神話技能</th>
+          <td><input type="number" class="input-status" v-model="cthulhuMythos.fixPoint" min="0"></td>
+        </tr>
+      </table>
       <v-snackbar v-model="snackbarStatus.snackbar" :timeout="snackbarStatus.timeout">
         {{ snackbarStatus.text }}
         <template v-slot:action="{ attrs }">
@@ -66,23 +111,23 @@ function dice(times: number, num: number): number {
  * @param param str+siz
  * @returns res ダメージボーナス
  */
-// function checkDamageBonus(param: number): string {
-//   let res = "+0";
-//   if (param <= 12) {
-//     res = "-1D6";
-//   } else if (param <= 16) {
-//     res = "-1D4";
-//   } else if (param <= 24) {
-//     res = "+0";
-//   } else if (param <= 32) {
-//     res = "+1D4";
-//   } else if (param <= 40) {
-//     res = "+1D6"
-//   } else {
-//     res = `+${Math.ceil((param - 40) / 16) + 1}D6`;
-//   }
-//   return res;
-// }
+function checkDamageBonus(param: number): string {
+  let res = "+0";
+  if (param <= 12) {
+    res = "-1D6";
+  } else if (param <= 16) {
+    res = "-1D4";
+  } else if (param <= 24) {
+    res = "+0";
+  } else if (param <= 32) {
+    res = "+1D4";
+  } else if (param <= 40) {
+    res = "+1D6"
+  } else {
+    res = `+${Math.ceil((param - 40) / 16) + 1}D6`;
+  }
+  return res;
+}
 
 @Component({
   components: {
@@ -92,9 +137,11 @@ function dice(times: number, num: number): number {
   }
 })
 export default class App extends Vue {
+  // profile
   private characterName = "";
   private occupation = "";
   private remarks = "";
+  // status
   private status= {
     str: 0,
     con: 0,
@@ -124,16 +171,23 @@ export default class App extends Vue {
   // skill
   private cthulhuMythos = {
     name: "クトゥルフ神話",
-    initValue: 0,
-    occupationPoint: 0,
-    interestPoint: 0,
     fixPoint: 0
   };
+  // skill point
+  private sumOccupationPoint = 0;
+  private sumInterestPoint = 0;
   // snackbar status
   private snackbarStatus = {
     snackbar: false,
     text: "dice rolled.",
     timeout: 2000,
+  };
+
+  get damageBonus() {
+    return checkDamageBonus(Number(this.status.str) + Number(this.status.siz));
+  }
+  get currentSanValue() {
+    return Number(this.status.pow)*5+Number(this.fixStatus.san);
   }
 
   // methods
@@ -153,3 +207,36 @@ export default class App extends Vue {
   }
 }
 </script>
+
+<style scoped>
+table {
+  background-color: white;
+  border-collapse: collapse;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+table th, table td {
+  width: 10rem;
+  border: solid 1px;
+}
+
+table td {
+  text-align: right;
+}
+
+.input-status {
+  position: relative;
+  box-sizing:border-box;
+  font-size: 1.5rem;
+  text-align: right;
+  width: 4rem;
+}
+
+.non-input-status {
+  margin-right: 1rem;
+  font-size: 1.5rem;
+  text-align: right;
+}
+</style>
