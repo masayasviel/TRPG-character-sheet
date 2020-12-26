@@ -23,7 +23,7 @@
         :propDEX.sync="status.dex"
         :propEDU.sync="status.edu"
       />
-      <v-snackbar v-model="snackbarStatus.snackbar" :timeout="timeout">
+      <v-snackbar v-model="snackbarStatus.snackbar" :timeout="snackbarStatus.timeout">
         {{ snackbarStatus.text }}
         <template v-slot:action="{ attrs }">
           <v-btn
@@ -133,7 +133,7 @@ export default class App extends Vue {
   private snackbarStatus = {
     snackbar: false,
     text: "dice rolled.",
-    timeout: 1500,
+    timeout: 2000,
   }
 
   // methods

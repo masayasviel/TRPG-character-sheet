@@ -18,7 +18,9 @@
           <td><input type="number" v-model="skill.occupationPoint" class="input-status" max="300" min="-99"></td>
           <td><input type="number" v-model="skill.interestPoint" class="input-status" max="300" min="-99"></td>
           <td><input type="number" v-model="skill.fixPoint" class="input-status" max="300" min="-99"></td>
-          <td><span class="non-input-status">{{ skill.interestPoint }}</span></td>
+          <td><span class="non-input-status">
+            {{ (Number(skill.initValue)+Number(skill.occupationPoint)+Number(skill.interestPoint)+Number(skill.fixPoint)) }}
+          </span></td>
         </tr>
       </tbody>
     </table>
@@ -27,7 +29,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, PropSync } from "vue-property-decorator";
-import { PropType } from "vue"
 
 interface SkillsType {
   name: string;
@@ -39,7 +40,7 @@ interface SkillsType {
 
 @Component
 export default class SkillTable extends Vue {
-  @PropSync("propSkillTable", { type: Array as PropType<SkillsType[]>, default: [] })
+  @PropSync("propSkillTable")
   private skillTable!: SkillsType[];
   @Prop()
   private category!: string;

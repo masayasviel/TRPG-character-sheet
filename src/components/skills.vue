@@ -57,6 +57,12 @@
       category="search"
       :propSkillTable.sync="searchList"
     />
+    <h2>その他技能</h2>
+    <EtceteraSkillTable
+      :propSkillTable.sync="etceteraList"
+      @appendEmit="append"
+      @declearEmit=declear
+    />
   </v-container>
 </template>
 
@@ -64,11 +70,21 @@
 import { Vue, Component, PropSync } from "vue-property-decorator";
 
 import skillsTable from "@/components/skillTable.vue";
+import EtceteraSkillTable from "@/components/etceteraSkillTable.vue";
 import skillsTableJSON from "@/assets/skills.json";
+
+interface SkillsType {
+  name: string;
+  initValue: number;
+  occupationPoint: number;
+  interestPoint: number;
+  fixPoint: number;
+}
 
 @Component({
   components: {
-    skillsTable
+    skillsTable,
+    EtceteraSkillTable
   }
 })
 export default class Skills extends Vue {
@@ -97,7 +113,7 @@ export default class Skills extends Vue {
   private combatList = skillsTableJSON.combat;
   private negotiateList = skillsTableJSON.negotiate;
   private searchList = skillsTableJSON.search;
-  // private etceteraList: SkillsType[] = [];
+  private etceteraList: SkillsType[] = [];
 
   get nativeLanguageInitValue() {
     this.nativeLanguage.initValue = Number(this.edu) * 5;
@@ -121,6 +137,30 @@ export default class Skills extends Vue {
           break;
       }
       return res;
+    }
+  }
+
+  /**
+   * その他技能に新しい行を追加
+   */
+  private append() {
+    if (this.etceteraList.length < 10) {
+      this.etceteraList.push({
+        name: "sample",
+        initValue: 0,
+        occupationPoint: 0,
+        interestPoint: 0,
+        fixPoint: 0
+      });
+    }
+  }
+
+  /**
+   * その他技能の最後の行を削除
+   */
+  private declear() {
+    if(this.etceteraList.length != 0) {
+      this.etceteraList.pop();
     }
   }
 }
