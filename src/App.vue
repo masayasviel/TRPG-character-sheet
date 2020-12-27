@@ -60,6 +60,18 @@
           </td>
         </tr>
         <tr>
+          <th>HP</th>
+          <td>
+            <input type="number" class="input-status" :value="currentHPValue" min="0"> / <span class="non-input-status">{{ currentHPValue }}</span>
+          </td>
+        </tr>
+        <tr>
+          <th>MP</th>
+          <td>
+            <input type="number" class="input-status" :value="currentMPValue" min="0"> / <span class="non-input-status">{{ currentMPValue }}</span>
+          </td>
+        </tr>
+        <tr>
           <th>ダメージボーナス</th>
           <td><span class="non-input-status">{{ damageBonus }}</span></td>
         </tr>
@@ -188,6 +200,12 @@ export default class App extends Vue {
   }
   get currentSanValue() {
     return Number(this.status.pow)*5+Number(this.fixStatus.san);
+  }
+  get currentHPValue() {
+    return Math.ceil((Number(this.status.con) + Number(this.status.siz)) / 2)+Number(this.fixStatus.hp);
+  }
+  get currentMPValue() {
+    return Number(this.status.pow) + Number(this.fixStatus.mp);
   }
 
   // methods
